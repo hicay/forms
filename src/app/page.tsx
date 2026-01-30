@@ -2,6 +2,7 @@
 
 import { useState, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
+import Image from "next/image";
 
 const GOOGLE_MAPS_URL = "https://www.google.com/maps";
 
@@ -51,8 +52,14 @@ function FeedbackForm() {
       <div className="w-full max-w-2xl">
         {/* Logo */}
         <div className="mb-8 sm:mb-16">
-          <h2 className="text-xl sm:text-2xl font-bold text-gray-900 tracking-tight">glam</h2>
-          <p className="text-xs sm:text-sm tracking-[0.3em] text-gray-900">h o n d e</p>
+          <Image
+            src="/logo.svg"
+            alt="Glamour Pets Logo"
+            width={150}
+            height={35}
+            className="w-[120px] sm:w-[150px] h-auto"
+            priority
+          />
         </div>
 
         {/* Rating Form */}
