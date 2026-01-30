@@ -7,6 +7,9 @@ import Image from "next/image";
 // Google Maps URL with review popup hash
 const GOOGLE_MAPS_REVIEW_URL = "https://www.google.com/maps/place/GlamourPets/@52.3559443,4.9237289,17z/data=!4m8!3m7!1s0x47c6097837c872c5:0x67b497ed4093f4c!8m2!3d52.3559411!4d4.9263038!9m1!1b1!16s%2Fg%2F11khy21q9g?entry=ttu#lrd=0x47c6097837c872c5:0x67b497ed4093f4c,3,,,";
 
+// Formcarry endpoint
+const FORMCARRY_URL = "https://formcarry.com/s/bc-HyTtJkIt";
+
 function FeedbackForm() {
   const searchParams = useSearchParams();
   const petName = searchParams.get("pet_name") || "your pet";
@@ -16,6 +19,7 @@ function FeedbackForm() {
   const [hoveredRating, setHoveredRating] = useState(0);
   const [step, setStep] = useState<"rating" | "feedback" | "done">("rating");
   const [feedback, setFeedback] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleStarClick = (star: number) => {
     setRating(star);
@@ -30,8 +34,28 @@ function FeedbackForm() {
     }, 300);
   };
 
-  const handleFeedbackSubmit = (e: React.FormEvent) => {
+  const handleFeedbackSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setIsSubmitting(true);
+
+    try {
+      await fetch(FORMCARRY_URL, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+        body: JSON.stringify({
+          pet_name: petName,
+          rating: rating,
+          feedback: feedback,
+        }),
+      });
+    } catch (error) {
+      console.error("Error submitting feedback:", error);
+    }
+
+    setIsSubmitting(false);
     setStep("done");
   };
 
@@ -125,21 +149,24 @@ function FeedbackForm() {
 
             <button
               type="submit"
-              className="inline-flex items-center gap-2 bg-gray-900 text-white px-6 py-3 sm:px-8 sm:py-4 rounded-full text-base sm:text-lg font-medium hover:bg-gray-800 active:bg-gray-700 transition-colors touch-manipulation"
+              disabled={isSubmitting}
+              className="inline-flex items-center gap-2 bg-gray-900 text-white px-6 py-3 sm:px-8 sm:py-4 rounded-full text-base sm:text-lg font-medium hover:bg-gray-800 active:bg-gray-700 transition-colors touch-manipulation disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              Submit
-              <svg
-                width="20"
-                height="20"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <path d="M5 12h14M12 5l7 7-7 7" />
-              </svg>
+              {isSubmitting ? "Submitting..." : "Submit"}
+              {!isSubmitting && (
+                <svg
+                  width="20"
+                  height="20"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
+                  <path d="M5 12h14M12 5l7 7-7 7" />
+                </svg>
+              )}
             </button>
           </form>
         )}
