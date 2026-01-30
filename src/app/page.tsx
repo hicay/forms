@@ -1,9 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useState, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 
-export default function Home() {
+function FeedbackForm() {
   const searchParams = useSearchParams();
   const petName = searchParams.get("pet_name") || "your pet";
 
@@ -103,5 +103,13 @@ export default function Home() {
         </form>
       </div>
     </div>
+  );
+}
+
+export default function Home() {
+  return (
+    <Suspense fallback={<div className="min-h-screen bg-white" />}>
+      <FeedbackForm />
+    </Suspense>
   );
 }
