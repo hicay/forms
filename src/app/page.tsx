@@ -4,27 +4,30 @@ import { useState, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import Image from "next/image";
 
-const GOOGLE_MAPS_URL = "https://www.google.com/maps";
+// Google Maps URL with review popup hash
+const GOOGLE_MAPS_REVIEW_URL = "https://www.google.com/maps/place/GlamourPets/@52.3559443,4.9237289,17z/data=!4m8!3m7!1s0x47c6097837c872c5:0x67b497ed4093f4c!8m2!3d52.3559411!4d4.9263038!9m1!1b1!16s%2Fg%2F11khy21q9g?entry=ttu#lrd=0x47c6097837c872c5:0x67b497ed4093f4c,3,,,";
 
 function FeedbackForm() {
   const searchParams = useSearchParams();
   const petName = searchParams.get("pet_name") || "your pet";
-  const googleMapsUrl = searchParams.get("google_maps_url") || GOOGLE_MAPS_URL;
+  const googleMapsUrl = searchParams.get("google_maps_url") || GOOGLE_MAPS_REVIEW_URL;
 
   const [rating, setRating] = useState(0);
   const [hoveredRating, setHoveredRating] = useState(0);
   const [step, setStep] = useState<"rating" | "feedback" | "done">("rating");
   const [feedback, setFeedback] = useState("");
 
-  const handleRatingSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (rating === 0) return;
+  const handleStarClick = (star: number) => {
+    setRating(star);
 
-    if (rating >= 4) {
-      window.location.href = googleMapsUrl;
-    } else {
-      setStep("feedback");
-    }
+    // Small delay for visual feedback before action
+    setTimeout(() => {
+      if (star >= 4) {
+        window.location.href = googleMapsUrl;
+      } else {
+        setStep("feedback");
+      }
+    }, 300);
   };
 
   const handleFeedbackSubmit = (e: React.FormEvent) => {
@@ -64,12 +67,12 @@ function FeedbackForm() {
 
         {/* Rating Form */}
         {step === "rating" && (
-          <form onSubmit={handleRatingSubmit}>
+          <div>
             <h1 className="text-2xl sm:text-4xl md:text-5xl font-bold text-gray-900 mb-8 sm:mb-12">
               Thank you for choosing us!
             </h1>
 
-            <div className="mb-8 sm:mb-16">
+            <div>
               <label className="block text-base sm:text-lg text-gray-700 mb-4">
                 How was {petName}&apos;s grooming today?{" "}
                 <span className="text-gray-400">*</span>
@@ -79,7 +82,7 @@ function FeedbackForm() {
                   <button
                     key={star}
                     type="button"
-                    onClick={() => setRating(star)}
+                    onClick={() => handleStarClick(star)}
                     onMouseEnter={() => setHoveredRating(star)}
                     onMouseLeave={() => setHoveredRating(0)}
                     className="transition-colors focus:outline-none touch-manipulation"
@@ -97,27 +100,7 @@ function FeedbackForm() {
                 ))}
               </div>
             </div>
-
-            <button
-              type="submit"
-              disabled={rating === 0}
-              className="inline-flex items-center gap-2 bg-gray-900 text-white px-6 py-3 sm:px-8 sm:py-4 rounded-full text-base sm:text-lg font-medium hover:bg-gray-800 active:bg-gray-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed touch-manipulation"
-            >
-              Submit
-              <svg
-                width="20"
-                height="20"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <path d="M5 12h14M12 5l7 7-7 7" />
-              </svg>
-            </button>
-          </form>
+          </div>
         )}
 
         {/* Feedback Form */}
