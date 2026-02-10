@@ -13,10 +13,19 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "GlamourPets - Feedback",
-  description: "Share your grooming experience with GlamourPets",
+  title: "Glamour Pets | Grooming Salon in Amsterdam",
+  description: "Pamper your furry friend at our Amsterdam dog grooming salon. We offer high-quality treatments with the best products. Discover us now!",
+  openGraph: {
+    description: "Pamper your furry friend at our Amsterdam dog grooming salon. We offer high-quality treatments with the best products. Discover us now!",
+  },
   icons: {
-    icon: "/logo.svg",
+    icon: [
+      { url: "https://glamourpets.nl/wp-content/uploads/2023/03/cropped-favicon-32x32.png", sizes: "32x32" },
+      { url: "https://glamourpets.nl/wp-content/uploads/2023/03/cropped-favicon-192x192.png", sizes: "192x192" },
+    ],
+    apple: [
+      { url: "https://glamourpets.nl/wp-content/uploads/2023/03/cropped-favicon-180x180.png" },
+    ],
   },
 };
 

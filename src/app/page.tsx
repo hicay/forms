@@ -26,7 +26,7 @@ function FeedbackForm() {
 
     // Small delay for visual feedback before action
     setTimeout(() => {
-      if (star >= 4) {
+      if (star >= 5) {
         window.location.href = googleMapsUrl;
       } else {
         setStep("feedback");
